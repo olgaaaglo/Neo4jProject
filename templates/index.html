@@ -1,6 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div id="createproject">
+    <button>Create project</button>
+    <form action="javascript:showCreateProjectForm()">
+        <input type="submit" value="Create project">
+    </form>
+
+    <form action="{{ url_for('createProject') }}" method="post">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="nr_students">Nr of students needed:</label><br>
+        <input type="text" id="nr_students" name="nr_students"><br>
+        <input type="submit" value="Zapisz">
+    </form> 
+    </div>
+
     <h1>{% block title %} Index {% endblock %}</h1>
-    <h2>Welcome to FlaskApp!</h2>
+    <form action="{{ url_for('save') }}" method="post">
+        <label for="fname">First name:</label><br>
+        <input type="text" id="fname" name="fname"><br>
+        <label for="lname">Last name:</label><br>
+        <input type="text" id="lname" name="lname"><br><br>
+        <input type="submit" value="Zapisz">
+      </form> 
 {% endblock %}
