@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %} Usuń projekt {% endblock %}</h1>
+
+{% block script %} 
+<script> 
+    function deleteProject() {
+        var pname = document.getElementById('pname').value;
+        console.log(pname);
+        fetch("{{ url_for('deleteProject', pname='m') }}", {
+            method: 'delete',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ 'pname' : pname})
+        })
+        .then(response => {
+            result = response.json()
+            status_code = response.status;
+            if(status_code != 200) {
+                console.log('Error in getting info!')
+                return false;
+            }
+            return result
+        })
+        .then(data => {
+            console.log(data)
+            document.getElementById("del").innerHTML = "Usunięto projekt " + data['deleted']
+        })
+        .catch(error => {
+            console.log(error)
+        });
+    }  
+</script>
+{% endblock %}
+
+{% block content %}
+<div id="del">
+<form action="javascript:deleteProject()">
+<label for="pname">Nazwa projektu:</label><br>
+<input type="text" id="pname" name="pname"><br>
+<input type="submit" value="Usuń">
+</form> 
+</div>
+{% endblock %}

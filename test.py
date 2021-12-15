@@ -10,42 +10,41 @@ class App:
     def close(self):
         self.driver.close()
 
+#CREATE CONSTRAINT ON (p:Project) ASSERT p.name IS UNIQUE
     def create_project(self, project_name, nr_students):
         with self.driver.session() as session:
-            # Write transactions allow the driver to handle retries and transient errors
             result = session.write_transaction(
                 self._create_and_return_project, project_name, nr_students)
         return result
 
     @staticmethod
     def _create_and_return_project(tx, project_name, nr_students):
-        # To learn more about the Cypher syntax, see https://neo4j.com/docs/cypher-manual/current/
-        # The Reference Card is also a good resource for keywords https://neo4j.com/docs/cypher-refcard/current/
+    #create
         query = (
             """MERGE (p:Project { name: $project_name, nr_students: $nr_students })
             RETURN p"""
         )
+        # try:
         result = tx.run(query, project_name=project_name, nr_students=nr_students)
+        #self.close()
         try:
             return [{"p": row["p"]["name"], "n": row["p"]["nr_students"]}
                     for row in result]
-        # Capture any errors along with the query and data for traceability
         except ServiceUnavailable as exception:
             logging.error("{query} raised an error: \n {exception}".format(
                 query=query, exception=exception))
             raise
+        # except:
+        #     return []
 
     def add_student_to_project(self, project_name, student_fname, student_lname):
         with self.driver.session() as session:
-            # Write transactions allow the driver to handle retries and transient errors
             result = session.write_transaction(
                 self._add_student_to_project_and_return, project_name, student_fname, student_lname)
         return result
 
     @staticmethod
     def _add_student_to_project_and_return(tx, project_name, student_fname, student_lname):
-        # To learn more about the Cypher syntax, see https://neo4j.com/docs/cypher-manual/current/
-        # The Reference Card is also a good resource for keywords https://neo4j.com/docs/cypher-refcard/current/
         query = (
             """MERGE (s:Student {fname: $student_fname, lname: $student_lname})
             with s MATCH (p:Project {name: $project_name})
@@ -55,7 +54,6 @@ class App:
         try:
             return [{"p": row["p"]["name"], "sf": row["s"]["fname"], "sl": row["s"]["lname"]}
                     for row in result]
-        # Capture any errors along with the query and data for traceability
         except ServiceUnavailable as exception:
             logging.error("{query} raised an error: \n {exception}".format(
                 query=query, exception=exception))
@@ -77,8 +75,20 @@ class App:
         result = tx.run(query, project_name=project_name)
         return [{"p": row["p"]["name"], "s": row["s"]["fname"] + " " + row["s"]["lname"]} for row in result]
 
+    def delete_project(self, project_name):
+        with self.driver.session() as session:
+            return session.read_transaction(self._delete_and_return_project, project_name)
+
+    @staticmethod
+    def _delete_and_return_project(tx, project_name):
+        query = (
+            """MATCH (p:Project {name: $project_name})
+                DETACH DELETE p"""
+        )
+        result = tx.run(query, project_name=project_name)
+        return result#[{"p": row["p"]["name"], "s": row["s"]["fname"] + " " + row["s"]["lname"]} for row in result]
+
 if __name__ == "__main__":
-    # Aura queries use an encrypted connection using the "neo4j+s" URI scheme
     uri = "neo4j+s://ffceff21.databases.neo4j.io"
     user = "neo4j"
     password = "s3M3B0rzrxJCZtEr181zpzyzK8jkWNajVkXgcAuCebw"

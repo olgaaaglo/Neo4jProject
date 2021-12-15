@@ -1,11 +1,10 @@
-function showCreateProjectForm(){
-    // document.getElementById("createproject").innerHTML = `
-    // <form action="{{ url_for('createProject') }}" method="post">
-    //     <label for="name">Name:</label><br>
-    //     <input type="text" id="name" name="name"><br>
-    //     <label for="nr">Nr of students needed:</label><br>
-    //     <input type="text" id="nr" name="nr"><br>
-    //     <input type="submit" value="Zapisz">
-    // </form> 
-    // `
-}
+// function deleteProject() {
+//     fetch(deleteProjectUrl, { 'pname' : document.getElementById("pname")}, {
+//         method: 'delete',
+//         headers: {'Content-Type': 'application/json'},
+//         body: JSON.stringify({ 'pname' : document.getElementById("pname")})
+//     })
+// }
+
+
+    //var deleteProjectUrl = "{{ url_for('deleteProject', {'pname' : }) }}" 

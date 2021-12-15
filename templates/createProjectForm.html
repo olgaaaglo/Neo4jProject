@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+<h1>{% block title %} Stwórz projekt {% endblock %}</h1>
+
+{% block script %} 
+<script> 
+    function createProject() {
+        var name = document.getElementById('name').value;
+        var nr_students = document.getElementById('nr_students').value;
+        
+        fetch("{{ url_for('createProject') }}", {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ 'name' : name, 'nr_students' : nr_students })
+        })
+        .then(response => {
+            result = response.json()
+            status_code = response.status;
+            if(status_code != 200) {
+                console.log('Error in getting info!')
+                return false;
+            }
+            return result
+        })
+        .then(data => {
+            console.log(data)
+            document.getElementById("create").innerHTML = "Zapisano projekt o nazwie: " + 
+                                                        data['name'] + " i potrzebnej liczbie studentów: " + data['nr']
+        })
+        .catch(error => {
+            console.log(error)
+        });
+    }  
+</script>
+{% endblock %}
+
+{% block content %}
+<div id="create">
+<form action="javascript:createProject()" method="post">
+    <label for="name">Nazwa projektu:</label><br>
+    <input type="text" id="name" name="name"><br>
+    <label for="nr_students">Liczba potrzebnych studentów:</label><br>
+    <input type="text" id="nr_students" name="nr_students"><br>
+    <input type="submit" value="Zapisz">
+</form> 
+</div>
+{% endblock %}
