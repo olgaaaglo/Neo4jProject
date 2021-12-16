@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 
-<h1>{% block title %} Dodaj studenta do projektu {% endblock %}</h1>
+<h1>{% block title %} Usuń studenta z projektu {% endblock %}</h1>
 
 {% block script %} 
 <script> 
-    function addStudentToProject() {
+    function deleteStudentFromProject() {
         var pname = document.getElementById('pname').value;
         var fname = document.getElementById('fname').value;
         var lname = document.getElementById('lname').value;
+        var url = "/deleteStudentFromProject/" + fname + '/' + lname + '/' + pname
         
-        fetch("{{ url_for('addStudentToProject') }}", {
-            method: 'post',
+        fetch(url, {
+            method: 'delete',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ 'pname' : pname, 'fname' : fname, 'lname' : lname })
         })
@@ -25,7 +26,7 @@
         })
         .then(data => {
             console.log(data)
-            document.getElementById("add").innerHTML = data['result']
+            document.getElementById("del").innerHTML = data['result']
         })
         .catch(error => {
             console.log(error)
@@ -36,15 +37,15 @@
 
 {% block content %}
 
-<div id="add">
-<form action="javascript:addStudentToProject()" method="post">
-<label for="pname">Nazwa projektu:</label><br>
-<input type="text" id="pname" name="pname"><br>
+<div id="del">
+<form action="javascript:deleteStudentFromProject()" method="post">
 <label for="fname">Imię</label><br>
 <input type="text" id="fname" name="fname"><br>
 <label for="lname">Nazwisko</label><br>
 <input type="text" id="lname" name="lname"><br><br>
-<input type="submit" value="Zapisz">
+<label for="pname">Nazwa projektu:</label><br>
+<input type="text" id="pname" name="pname"><br>
+<input type="submit" value="Usuń">
 </form> 
 </div>
 {% endblock %}

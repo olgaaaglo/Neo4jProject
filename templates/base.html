@@ -10,18 +10,27 @@
             margin-left: 50px;
             text-decoration: none;
         }
+        h3 {
+            text-align: center;
+            color: #d64161;
+        }
     </style>
     <script src='{{ url_for("static", filename="index.js") }}'></script>
     {% block script %} {% endblock %}
     
 </head>
 <body>
+    <h3> Projekty studentów </h3>
     <nav>
         <a href="{{ url_for('index') }}">Strona główna</a>
         <a href="{{ url_for('createProjectForm') }}">Stwórz projekt</a>
         <a href="{{ url_for('addStudentToProjectForm') }}">Dodaj studenta do projektu</a>
         <a href="{{ url_for('findProjectTeamForm') }}">Pokaż uczestników projektu</a>
         <a href="{{ url_for('deleteProjectForm') }}">Usuń projekt</a>
+        <a href="{{ url_for('deleteStudentFromProjectForm') }}">Usuń studenta z projektu</a>
+        <a href="{{ url_for('updateProjectForm') }}">Zaktualizuj projekt</a>
+        <a href="{{ url_for('findAllProjectsForm') }}">Pokaż wszystkie projekty</a>
+        
     </nav>
     <hr>
     <div class="content">

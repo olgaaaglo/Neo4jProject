@@ -24,8 +24,7 @@
         })
         .then(data => {
             console.log(data)
-            document.getElementById("create").innerHTML = "Zapisano projekt o nazwie: " + 
-                                                        data['name'] + " i potrzebnej liczbie studentów: " + data['nr']
+            document.getElementById("create").innerHTML = data['result']
         })
         .catch(error => {
             console.log(error)

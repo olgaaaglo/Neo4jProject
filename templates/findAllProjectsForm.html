@@ -4,11 +4,8 @@
 
 {% block script %} 
 <script> 
-    function findProjectTeam() {
-        var pname = document.getElementById('pname').value;
-        // var url = "{{ url_for('findProjectTeam', pname=pname) }}" + "/" + pname
-        // var url = "{{ url_for('findProjectTeam', pname='pname') }}".replace('pname', pname)
-        var url = "/findProjectTeam/" + pname
+    function findAllProjects() {
+        var url = "/findAllProjects/"
         
         fetch(url, {
             method: 'get',
@@ -25,7 +22,7 @@
         })
         .then(data => {
             console.log(data)
-            document.getElementById("find").innerHTML =  data['result'] 
+            document.getElementById("find").innerHTML =  data['result']
         })
         .catch(error => {
             console.log(error)
@@ -36,9 +33,7 @@
 
 {% block content %}
 <div id="find">
-<form action="javascript:findProjectTeam()" method="post">
-<label for="pname">Nazwa projektu:</label><br>
-<input type="text" id="pname" name="pname"><br>
+<form action="javascript:findAllProjects()" method="post">
 <input type="submit" value="Pokaż">
 </form> 
 </div>

@@ -7,7 +7,7 @@
     function deleteProject() {
         var pname = document.getElementById('pname').value;
         console.log(pname);
-        fetch("{{ url_for('deleteProject', pname='m') }}", {
+        fetch("{{ url_for('deleteProject', pname='m') }}", { ////////////////////////////////////
             method: 'delete',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ 'pname' : pname})
@@ -23,7 +23,7 @@
         })
         .then(data => {
             console.log(data)
-            document.getElementById("del").innerHTML = "Usunięto projekt " + data['deleted']
+            document.getElementById("del").innerHTML = data['result']
         })
         .catch(error => {
             console.log(error)
