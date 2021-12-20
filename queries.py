@@ -21,7 +21,8 @@ class Queries:
     def _create_and_return_project(tx, project_name, nr_students):
         query = (
             """MERGE (p:Project {name: $project_name})
-                ON CREATE SET p.nr_students = $nr_students"""
+                ON CREATE SET p.nr_students = $nr_students
+                RETURN p"""
         )
         result = tx.run(query, project_name=project_name, nr_students=nr_students)
         try:
@@ -107,13 +108,18 @@ class Queries:
     @staticmethod
     def _update_and_return_project(tx, project_name, nr_students):
         query = (
-            """MATCH (p:Project {name : $project_name}) SET p.nr_students=$nr_students return p"""
+            #"""MATCH (p:Project {name : $project_name}) SET p.nr_students=$nr_students return p"""
+            """MATCH (p:Project {name: $project_name}) 
+            WITH p OPTIONAL MATCH (s:Student)-[:WORKS_ON]->(p)
+            WITH COUNT(s) as nr, p
+            WHERE nr <= toInteger($nr_students)
+            SET p.nr_students=$nr_students 
+            RETURN p"""
         )
         result = tx.run(query, project_name=project_name, nr_students=nr_students)
         return [{"p": row["p"]["name"], "n": row["p"]["nr_students"]}
                     for row in result]
-
-    #pokaz wszystkie projekty
+                
     def find_all_projects(self):
         with self.driver.session() as session:
             return session.read_transaction(self._find_and_return_all_projects)
@@ -127,5 +133,17 @@ class Queries:
         result = tx.run(query)
         return [{"p": row["p"]["name"], "pn" : row["p"]["nr_students"]} for row in result]
 
-        
-    #pokaz projekty danego studenta
+    def find_student_projects(self, student_fname, student_lname):
+        with self.driver.session() as session:
+            return session.read_transaction(self._find_and_return_student_projects, student_fname, student_lname)
+
+    @staticmethod
+    def _find_and_return_student_projects(tx, student_fname, student_lname):
+        query = (
+            """MATCH (s:Student {fname: $student_fname, lname: $student_lname})
+            MATCH (p:Project)
+            WHERE (s)-[:WORKS_ON]->(p)
+            RETURN p, s"""
+        )
+        result = tx.run(query, student_fname=student_fname, student_lname=student_lname)
+        return [{"p": row["p"]["name"], "s": row["s"]["fname"] + " " + row["s"]["lname"]} for row in result]

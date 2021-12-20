@@ -22,7 +22,13 @@
         })
         .then(data => {
             console.log(data)
-            document.getElementById("find").innerHTML =  data['result']
+            //document.getElementById("find").innerHTML =  data['result']
+            res = document.getElementById("find")
+            res.innerHTML = "Projekty: </br> <ul>"
+            for (var r = 0; r < data['result'].length; r++) {
+                res.innerHTML += "<li>" + data['result'][r]['p'] + ", max " + data['result'][r]['pn'] + " osób </li></br>"
+            }
+            res.innerHTML += "</ul>"
         })
         .catch(error => {
             console.log(error)

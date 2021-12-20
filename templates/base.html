@@ -5,14 +5,17 @@
     <title>{% block title %} {% endblock %} - FlaskApp</title>
     <style>
         nav a {
-            color: #d64161;
+            color: #cc3300;
             font-size: 1em;
             margin-left: 50px;
             text-decoration: none;
         }
         h3 {
             text-align: center;
-            color: #d64161;
+            color: #cc9900;
+        }
+        .content {
+            margin-left: 50px;
         }
     </style>
     <script src='{{ url_for("static", filename="index.js") }}'></script>
@@ -30,6 +33,7 @@
         <a href="{{ url_for('deleteStudentFromProjectForm') }}">Usuń studenta z projektu</a>
         <a href="{{ url_for('updateProjectForm') }}">Zaktualizuj projekt</a>
         <a href="{{ url_for('findAllProjectsForm') }}">Pokaż wszystkie projekty</a>
+        <a href="{{ url_for('findStudentProjectsForm') }}">Pokaż projekty studenta</a>
         
     </nav>
     <hr>

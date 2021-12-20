@@ -40,7 +40,7 @@ def addStudentToProject():
     if result:
         msg = f"{ result[0]['sf'] } { result[0]['sl'] } jest zapisana_y do projektu { result[0]['p'] }"
     else:
-        msg = "W projekcie nie ma już więcej miejsc."
+        msg = "W projekcie nie ma już więcej miejsc lub projekt nie istnieje."
     return jsonify({ 'result' : msg })
 
 @app.route("/findProjectTeamForm")
@@ -52,13 +52,7 @@ def findProjectTeam(pname):
     myapp = getQueries()
     result = myapp.find_project_team(pname)
     myapp.close()
-    if result:
-        msg = f"W projekcie {result[0]['p']} uczestniczą (max {result[0]['pn']}): "
-        for row in result:
-            msg += f"- {row['s']}\n"
-    else:
-        msg = "W projekcie nikt nie uczestniczy lub nie ma takiego projektu"
-    return jsonify({ 'result' : msg })
+    return jsonify({ 'result' : result })
 
 @app.route("/deleteProjectForm")
 def deleteProjectForm():
@@ -100,7 +94,7 @@ def updateProject(pname, nr_students):
     if result:
         msg = f"Projekt { result[0]['p']} zaktualizowano: maksymalna liczba studentów wynosi { result[0]['n'] }"
     else:
-        msg = "Nie istnieje taki projekt"
+        msg = "Nie istnieje taki projekt lub liczba studentów już uczestniczących w projekcie jest większa"
     return jsonify({'result': msg})
     
 @app.route("/findAllProjectsForm")
@@ -112,13 +106,18 @@ def findAllProjects():
     myapp = getQueries()
     result = myapp.find_all_projects()
     myapp.close()
-    if result:
-        msg = f"Projekty: "
-        for row in result:
-            msg += f"- { row['p'] }, max: { row['pn'] } nl"
-    else:
-        msg = "Nie istnieje żaden projekt"
-    return jsonify({ 'result' : msg })    
+    return jsonify({ 'result' : result })    
+
+@app.route("/findStudentProjectsForm")
+def findStudentProjectsForm():
+    return render_template('findStudentProjectsForm.html')
+
+@app.route("/findStudentProjects/<string:fname>/<string:lname>", methods=['GET'])
+def findStudentProjects(fname, lname):
+    myapp = getQueries()
+    result = myapp.find_student_projects(fname, lname)
+    myapp.close()
+    return jsonify({ 'result' : result })
 
 def getQueries():
     uri = "neo4j+s://ffceff21.databases.neo4j.io"

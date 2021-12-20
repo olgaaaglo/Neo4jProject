@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 
-<h1>{% block title %} Pokaż uczestników projektu {% endblock %}</h1>
+<h1>{% block title %} Pokaż projekty studenta {% endblock %}</h1>
 
 {% block script %} 
 <script> 
-    function findProjectTeam() {
-        var pname = document.getElementById('pname').value;
-        // var url = "{{ url_for('findProjectTeam', pname=pname) }}" + "/" + pname
-        // var url = "{{ url_for('findProjectTeam', pname='pname') }}".replace('pname', pname)
-        var url = "/findProjectTeam/" + pname
+    function findStudentProjects() {
+        var fname = document.getElementById('fname').value;
+        var lname = document.getElementById('lname').value;
+        var url = "/findStudentProjects/" + fname + "/" + lname
         
         fetch(url, {
             method: 'get',
@@ -25,17 +24,16 @@
         })
         .then(data => {
             console.log(data)
-            //document.getElementById("find").innerHTML =  data['result'] 
             res = document.getElementById("find")
             if (data['result'].length > 0) {
-                res.innerHTML = "W projekcie " + data['result'][0]['p'] + " uczestniczą (max " + data['result'][0]['pn'] + "): </br> <ul>"
+                res.innerHTML = data['result'][0]['s'] + " - projekty: </br> <ul>"
                 for (var r = 0; r < data['result'].length; r++) {
-                    res.innerHTML += "<li>" + data['result'][r]['s'] + "</li></br>"
+                    res.innerHTML += "<li>" + data['result'][r]['p'] + "</li></br>"
                 }
                 res.innerHTML += "</ul>"
             }
             else {
-                res.innerHTML = "W projekcie nikt nie uczestniczy lub nie ma takiego projektu"
+                res.innerHTML = "Student_ka nie istnieje lub nie uczestniczy w żadnym projekcie"
             }
         })
         .catch(error => {
@@ -47,9 +45,11 @@
 
 {% block content %}
 <div id="find">
-<form action="javascript:findProjectTeam()" method="post">
-<label for="pname">Nazwa projektu:</label><br>
-<input type="text" id="pname" name="pname"><br>
+<form action="javascript:findStudentProjects()" method="post">
+<label for="fname">Imię:</label><br>
+<input type="text" id="fname" name="fname"><br>
+<label for="lname">Nazwisko:</label><br>
+<input type="text" id="lname" name="lname"><br>
 <input type="submit" value="Pokaż">
 </form> 
 </div>
