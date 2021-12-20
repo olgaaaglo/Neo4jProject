@@ -23,7 +23,6 @@ def createProject():
     else:
         msg = f"Projekt o podanej nazwie już istnieje"
     return jsonify({ 'result' : msg })
-    #return render_template('createProjectForm.html', data={'pname' : result[0]['p'], 'nr' : result[0]['n']})
 
 @app.route("/addStudentToProjectForm")
 def addStudentToProjectForm():

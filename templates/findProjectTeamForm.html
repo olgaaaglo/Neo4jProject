@@ -6,8 +6,6 @@
 <script> 
     function findProjectTeam() {
         var pname = document.getElementById('pname').value;
-        // var url = "{{ url_for('findProjectTeam', pname=pname) }}" + "/" + pname
-        // var url = "{{ url_for('findProjectTeam', pname='pname') }}".replace('pname', pname)
         var url = "/findProjectTeam/" + pname
         
         fetch(url, {
@@ -25,7 +23,6 @@
         })
         .then(data => {
             console.log(data)
-            //document.getElementById("find").innerHTML =  data['result'] 
             res = document.getElementById("find")
             if (data['result'].length > 0) {
                 res.innerHTML = "W projekcie " + data['result'][0]['p'] + " uczestniczą (max " + data['result'][0]['pn'] + "): </br> <ul>"
