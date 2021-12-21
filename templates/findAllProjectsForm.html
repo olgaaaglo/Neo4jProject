@@ -21,8 +21,6 @@
             return result
         })
         .then(data => {
-            console.log(data)
-            //document.getElementById("find").innerHTML =  data['result']
             res = document.getElementById("find")
             res.innerHTML = "Projekty: </br> <ul>"
             for (var r = 0; r < data['result'].length; r++) {

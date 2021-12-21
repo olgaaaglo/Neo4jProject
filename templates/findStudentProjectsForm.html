@@ -23,7 +23,6 @@
             return result
         })
         .then(data => {
-            console.log(data)
             res = document.getElementById("find")
             if (data['result'].length > 0) {
                 res.innerHTML = data['result'][0]['s'] + " - projekty: </br> <ul>"

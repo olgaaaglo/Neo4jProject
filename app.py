@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+import os
 from queries import Queries
 
 app = Flask(__name__)
@@ -15,7 +16,7 @@ def createProjectForm():
 def createProject():
     myapp = getQueries()
     name = request.json['name']
-    nr_students = request.json['nr_students']
+    nr_students = int(request.json['nr_students'])
     result = myapp.create_project(name, nr_students)
     myapp.close()
     if result:
@@ -60,8 +61,7 @@ def deleteProjectForm():
 @app.route("/deleteProject/<string:pname>", methods=['DELETE'])
 def deleteProject(pname):
     myapp = getQueries()
-    pname = request.json['pname']
-    result = myapp.delete_project(pname)
+    myapp.delete_project(pname)
     myapp.close()
     return jsonify({'result': f"Usunięto projekt {pname}"})
 
@@ -72,10 +72,7 @@ def deleteStudentFromProjectForm():
 @app.route("/deleteStudentFromProject/<string:fname>/<string:lname>/<string:pname>", methods=['DELETE'])
 def deleteStudentFromProject(fname, lname, pname):
     myapp = getQueries()
-    fname = request.json['fname']
-    lname = request.json['lname']
-    pname = request.json['pname']
-    result = myapp.delete_student_from_project(pname, fname, lname)
+    myapp.delete_student_from_project(pname, fname, lname)
     myapp.close()
     return jsonify({'result': f"{fname} {lname} jest usunięta_y z projektu {pname}"})
 
@@ -86,8 +83,6 @@ def updateProjectForm():
 @app.route("/updateProject/<string:pname>/<string:nr_students>", methods=['UPDATE'])
 def updateProject(pname, nr_students):
     myapp = getQueries()
-    pname = request.json['pname']
-    nr_students = request.json['nr_students']
     result = myapp.update_project(pname, nr_students)
     myapp.close()
     if result:
@@ -119,7 +114,8 @@ def findStudentProjects(fname, lname):
     return jsonify({ 'result' : result })
 
 def getQueries():
-    uri = "neo4j+s://ffceff21.databases.neo4j.io"
-    user = "neo4j"
-    password = "s3M3B0rzrxJCZtEr181zpzyzK8jkWNajVkXgcAuCebw"
-    return Queries(uri, user, password)
+    uri = os.environ['uri']
+    user = os.environ['user']
+    password = os.environ['pass']
+    return Queries(uri, user, password) 
+    

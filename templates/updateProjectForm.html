@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-<h1>{% block title %} Zaktualizuj projek {% endblock %}</h1>
+<h1>{% block title %} Zaktualizuj projekt {% endblock %}</h1>
 
 {% block script %} 
 <script> 
@@ -12,7 +12,6 @@
         fetch(url, {
             method: 'update',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ 'pname' : pname, 'nr_students' : nr_students })
         })
         .then(response => {
             result = response.json()

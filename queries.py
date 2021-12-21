@@ -46,7 +46,7 @@ class Queries:
             WITH p OPTIONAL MATCH (s:Student)-[:WORKS_ON]->(p)
             WITH COUNT(s) as nr, p
             WHERE nr < toInteger(p.nr_students)
-            MATCH (s2:Student {fname: $student_fname, lname: $student_lname})
+            MERGE (s2:Student {fname: $student_fname, lname: $student_lname})
             MERGE (s2)-[:WORKS_ON]->(p) return s2, p"""
         )
         result = tx.run(query, project_name=project_name, student_fname=student_fname, student_lname=student_lname)
@@ -72,8 +72,13 @@ class Queries:
             RETURN p, s"""
         )
         result = tx.run(query, project_name=project_name)
-        return [{"p": row["p"]["name"], "pn" : row["p"]["nr_students"],
+        try:
+            return [{"p": row["p"]["name"], "pn" : row["p"]["nr_students"],
                 "s": row["s"]["fname"] + " " + row["s"]["lname"]} for row in result]
+        except ServiceUnavailable as exception:
+            logging.error("{query} raised an error: \n {exception}".format(
+                query=query, exception=exception))
+            raise
 
     def delete_project(self, project_name):
         with self.driver.session() as session:
@@ -86,7 +91,12 @@ class Queries:
                 DETACH DELETE p"""
         )
         result = tx.run(query, project_name=project_name)
-        return result
+        try:
+            return result
+        except ServiceUnavailable as exception:
+            logging.error("{query} raised an error: \n {exception}".format(
+                query=query, exception=exception))
+            raise
 
     def delete_student_from_project(self, project_name, student_fname, student_lname):
         with self.driver.session() as session:
@@ -99,7 +109,12 @@ class Queries:
                 DETACH DELETE w"""
         )
         result = tx.run(query, project_name=project_name, student_fname=student_fname, student_lname=student_lname)
-        return result
+        try:
+            return result
+        except ServiceUnavailable as exception:
+            logging.error("{query} raised an error: \n {exception}".format(
+                query=query, exception=exception))
+            raise
 
     def update_project(self, project_name, nr_students):
         with self.driver.session() as session:
@@ -117,8 +132,13 @@ class Queries:
             RETURN p"""
         )
         result = tx.run(query, project_name=project_name, nr_students=nr_students)
-        return [{"p": row["p"]["name"], "n": row["p"]["nr_students"]}
+        try:
+            return [{"p": row["p"]["name"], "n": row["p"]["nr_students"]}
                     for row in result]
+        except ServiceUnavailable as exception:
+            logging.error("{query} raised an error: \n {exception}".format(
+                query=query, exception=exception))
+            raise
                 
     def find_all_projects(self):
         with self.driver.session() as session:
@@ -131,7 +151,12 @@ class Queries:
             RETURN p"""
         )
         result = tx.run(query)
-        return [{"p": row["p"]["name"], "pn" : row["p"]["nr_students"]} for row in result]
+        try:
+            return [{"p": row["p"]["name"], "pn" : row["p"]["nr_students"]} for row in result]
+        except ServiceUnavailable as exception:
+            logging.error("{query} raised an error: \n {exception}".format(
+                query=query, exception=exception))
+            raise
 
     def find_student_projects(self, student_fname, student_lname):
         with self.driver.session() as session:
@@ -146,4 +171,9 @@ class Queries:
             RETURN p, s"""
         )
         result = tx.run(query, student_fname=student_fname, student_lname=student_lname)
-        return [{"p": row["p"]["name"], "s": row["s"]["fname"] + " " + row["s"]["lname"]} for row in result]
+        try:
+            return [{"p": row["p"]["name"], "s": row["s"]["fname"] + " " + row["s"]["lname"]} for row in result]
+        except ServiceUnavailable as exception:
+            logging.error("{query} raised an error: \n {exception}".format(
+                query=query, exception=exception))
+            raise

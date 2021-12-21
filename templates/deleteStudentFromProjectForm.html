@@ -13,7 +13,6 @@
         fetch(url, {
             method: 'delete',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ 'pname' : pname, 'fname' : fname, 'lname' : lname })
         })
         .then(response => {
             result = response.json()
