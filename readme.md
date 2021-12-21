@@ -1,3 +1,5 @@
+Link to app: https://students-projects-db.herokuapp.com/
+
 Linux:
 python3 -m venv venv
 . venv/bin/activate
