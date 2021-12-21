@@ -10,7 +10,7 @@
         var url = "/updateProject/" + pname + '/' + nr_students
         
         fetch(url, {
-            method: 'update',
+            method: 'put',
             headers: {'Content-Type': 'application/json'},
         })
         .then(response => {

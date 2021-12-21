@@ -80,7 +80,7 @@ def deleteStudentFromProject(fname, lname, pname):
 def updateProjectForm():
     return render_template('updateProjectForm.html')
 
-@app.route("/updateProject/<string:pname>/<string:nr_students>", methods=['UPDATE'])
+@app.route("/updateProject/<string:pname>/<string:nr_students>", methods=['PUT'])
 def updateProject(pname, nr_students):
     myapp = getQueries()
     result = myapp.update_project(pname, nr_students)
